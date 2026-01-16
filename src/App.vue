@@ -1,21 +1,56 @@
 <script setup>
-  import { ref } from 'vue'
+  import { reactive } from 'vue'
 
-  const items = ref(['item1', 'item2', 'item3'])
+  const gendersList = ['ชาย', 'หญิง', 'ไม่ระบุ']
+  const interestsList = ['หนังสือ', 'การเดินทาง', 'การอ่าน', 'การฟังเพลง']
 
-  const addItem =() => {
-    const itemLength = (items.value.length + 1)
-    items.value.push('item' + itemLength)
+  const formData = reactive({
+    interests: []
+  })
+
+  const submitForm = () => {
+    console.log(formData)
+    console.log(formData.interests.join())
   }
+
 </script>
+
 
 <template>
   <div>
-    <ul>
-      <li v-for="item in items">
-        {{ item }}
-      </li>
-    </ul>
-    <button @click="addItem()"> Add new item</button>
+    <div>
+      <div>ชือจริง</div>
+      <input class="form" type="text" v-model="formData.firstname">
+    </div>
+
+    <div>
+      <div>นามสกุล</div>
+      <input class="form" type="text" v-model="formData.lastname">
+    </div>
+
+    <div>
+      <div>Gender</div>
+      <div v-for="gender in gendersList">
+        <input type="radio" name="gender" :value="gender" v-model="formData.gender">
+        {{ gender }}
+      </div>
+    </div>
+
+    <div>
+      <div>Interests</div>
+      <div v-for="interest in interestsList">
+        <input type="checkbox" name="interest" :value="interest" v-model="formData.interests">
+        {{ interest }}
+      </div>
+    </div>
+
+    <div>
+      <div>คำอธิบายเพิ่มเติม</div>
+      <textarea v-model="formData.description"></textarea>
+    </div>
+    
+    <button @click="submitForm()"> ส่ง Form</button>
+
   </div>
+
 </template>
