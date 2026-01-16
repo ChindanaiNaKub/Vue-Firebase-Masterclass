@@ -1,14 +1,20 @@
 <script setup>
-  import { ref } from 'vue'
+  import {ref} from 'vue'
 
-  const fullname = ref('')
+  const isCheck = ref(false)
+
+  const toggleCheck = () => {
+    isCheck.value = !isCheck.value
+  }
 
 
 </script>
 
 <template>
   <div>
-    {{ fullname }}
-    <input type="text"v-model="fullname" />
+    <div v-if="isCheck">
+      แสดงคำนี้ออกมา
+    </div>
+    <button @click="toggleCheck()"> กดเพื่อเปิด</button>
   </div>
 </template>
