@@ -8,6 +8,7 @@
 | [2](./chapter-2.md) | Vue Component และ Concept | Component, ref, reactive, v-model, v-if, v-for |
 | [3](./chapter-3.md) | คุณสมบัติเพิ่มเติม | Life Cycle, Computed, Watch, Props |
 | [4](./chapter-4.md) | Router และ Pinia | Vue Router, Pinia Store, Navigation |
+| [5](./chapter-5.md) | ต่อ API | Fetch API, CRUD, Loading State |
 
 ---
 

@@ -1,13 +1,36 @@
-// Chapter 4: Vue Router Setup
+// Chapter 4-5: Vue Router Setup
 import { createRouter, createWebHistory } from 'vue-router'
+
+// Chapter 4: Book Views
 import BookListView from '../views/BookListView.vue'
 import BookUpdateView from '../views/BookUpdateView.vue'
+
+// Chapter 5: Todo Views
+import TodoListView from '../views/TodoListView.vue'
+import TodoEditView from '../views/TodoEditView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // ============================================
+    // Chapter 5: Todo List (API)
+    // ============================================
     {
       path: '/',
+      name: 'todo-list',
+      component: TodoListView
+    },
+    {
+      path: '/todo/edit/:id',
+      name: 'todo-edit',
+      component: TodoEditView
+    },
+
+    // ============================================
+    // Chapter 4: Book Store
+    // ============================================
+    {
+      path: '/books',
       name: 'book-list',
       component: BookListView
     },

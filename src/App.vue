@@ -1,15 +1,15 @@
 <script setup>
-// Chapter 4: App with Router
+// Chapter 4-5: App with Router
 // RouterView จะแสดง Component ตาม path ปัจจุบัน
 </script>
 
 <template>
   <div class="app">
     <nav class="navbar">
-      <RouterLink to="/" class="nav-brand">📚 Book Store</RouterLink>
+      <RouterLink to="/" class="nav-brand">📚 Vue Workshop</RouterLink>
       <div class="nav-links">
-        <RouterLink to="/" class="nav-link">หน้าแรก</RouterLink>
-        <RouterLink to="/book/create" class="nav-link">เพิ่มหนังสือ</RouterLink>
+        <RouterLink to="/" class="nav-link">Todo List</RouterLink>
+        <RouterLink to="/books" class="nav-link">Book Store</RouterLink>
       </div>
     </nav>
 
@@ -19,7 +19,7 @@
     </main>
 
     <footer class="footer">
-      <p>Vue Firebase Masterclass - Chapter 4: Router & Pinia</p>
+      <p>Vue Firebase Masterclass - Chapter 4: Router & Pinia | Chapter 5: API</p>
     </footer>
   </div>
 </template>
