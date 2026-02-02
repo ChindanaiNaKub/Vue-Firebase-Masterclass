@@ -1,24 +1,19 @@
 <script setup>
-// Chapter 4 Workshop: Book List View
-// ใช้ Router + Pinia
-
+// Chapter 4-6 Workshop: Book List View with Tailwind + DaisyUI
 import { useRouter } from 'vue-router'
 import { useBookStore } from '@/stores/books'
 
 const router = useRouter()
 const bookStore = useBookStore()
 
-// Navigate ไปหน้าเพิ่มหนังสือ
 const goToCreate = () => {
   router.push({ name: 'book-create' })
 }
 
-// Navigate ไปหน้าแก้ไขหนังสือ
 const goToEdit = (id) => {
   router.push({ name: 'book-edit', params: { id } })
 }
 
-// ลบหนังสือ
 const handleDelete = (id) => {
   if (confirm('ต้องการลบหนังสือนี้?')) {
     bookStore.removeBook(id)
@@ -27,178 +22,84 @@ const handleDelete = (id) => {
 </script>
 
 <template>
-  <div class="container">
-    <div class="header">
-      <h1>📚 รายการหนังสือ</h1>
+  <div>
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">📚 รายการหนังสือ</h1>
       <button @click="goToCreate" class="btn btn-primary">
         ➕ เพิ่มหนังสือ
       </button>
     </div>
 
     <!-- Stats -->
-    <div class="stats">
+    <div class="stats shadow w-full mb-6">
       <div class="stat">
-        <span class="stat-value">{{ bookStore.bookCount }}</span>
-        <span class="stat-label">เล่ม</span>
+        <div class="stat-title">จำนวนหนังสือ</div>
+        <div class="stat-value text-primary">{{ bookStore.bookCount }}</div>
+        <div class="stat-desc">เล่ม</div>
       </div>
       <div class="stat">
-        <span class="stat-value">฿{{ bookStore.totalPrice.toLocaleString() }}</span>
-        <span class="stat-label">มูลค่ารวม</span>
+        <div class="stat-title">มูลค่ารวม</div>
+        <div class="stat-value text-secondary">฿{{ bookStore.totalPrice.toLocaleString() }}</div>
+        <div class="stat-desc">บาท</div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div v-if="bookStore.books.length === 0" class="card bg-base-100 shadow-xl">
+      <div class="card-body items-center text-center">
+        <p class="text-4xl">📖</p>
+        <p class="text-xl font-bold">ยังไม่มีหนังสือ</p>
+        <p class="text-base-content/60">กดปุ่มเพิ่มหนังสือเพื่อเริ่มต้น</p>
+        <button @click="goToCreate" class="btn btn-primary mt-4">
+          ➕ เพิ่มหนังสือเล่มแรก
+        </button>
       </div>
     </div>
 
     <!-- Book List -->
-    <div class="book-list">
-      <div v-if="bookStore.books.length === 0" class="empty">
-        ยังไม่มีหนังสือ กดปุ่มเพิ่มหนังสือเพื่อเริ่มต้น
-      </div>
-
+    <div class="space-y-3">
       <div 
         v-for="book in bookStore.books" 
-        :key="book.id" 
-        class="book-card"
+        :key="book.id"
+        class="card bg-base-100 shadow-md hover:shadow-lg transition-all hover:-translate-y-1"
       >
-        <div class="book-info">
-          <h3>{{ book.title }}</h3>
-          <p class="author">โดย {{ book.author }}</p>
-          <p class="price">฿{{ book.price.toLocaleString() }}</p>
-        </div>
-        <div class="book-actions">
-          <button @click="goToEdit(book.id)" class="btn btn-edit">
-            ✏️ แก้ไข
-          </button>
-          <button @click="handleDelete(book.id)" class="btn btn-delete">
-            🗑️ ลบ
-          </button>
+        <div class="card-body p-4 flex-row items-center gap-4">
+          <!-- Book Icon -->
+          <div class="avatar placeholder">
+            <div class="bg-primary text-primary-content rounded-lg w-12">
+              <span class="text-xl">📕</span>
+            </div>
+          </div>
+
+          <!-- Book Info -->
+          <div class="flex-1">
+            <h3 class="font-bold text-lg">{{ book.title }}</h3>
+            <p class="text-base-content/60 text-sm">โดย {{ book.author }}</p>
+          </div>
+
+          <!-- Price -->
+          <div class="text-right">
+            <span class="text-xl font-bold text-primary">฿{{ book.price.toLocaleString() }}</span>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex gap-2">
+            <button 
+              @click="goToEdit(book.id)" 
+              class="btn btn-sm btn-info btn-outline"
+            >
+              ✏️ แก้ไข
+            </button>
+            <button 
+              @click="handleDelete(book.id)" 
+              class="btn btn-sm btn-error btn-outline"
+            >
+              🗑️ ลบ
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.header h1 {
-  margin: 0;
-  color: #fff;
-}
-
-.stats {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.stat {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 15px 25px;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.stat-value {
-  display: block;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #00cec9;
-}
-
-.stat-label {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-}
-
-.book-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.empty {
-  text-align: center;
-  padding: 40px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.book-card {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: transform 0.2s, background 0.2s;
-}
-
-.book-card:hover {
-  background: rgba(255, 255, 255, 0.12);
-  transform: translateX(5px);
-}
-
-.book-info h3 {
-  margin: 0 0 5px 0;
-  color: #fff;
-}
-
-.author {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.9rem;
-}
-
-.price {
-  margin: 8px 0 0 0;
-  color: #00cec9;
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-
-.book-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #00b894, #00cec9);
-  color: white;
-}
-
-.btn-edit {
-  background: rgba(52, 152, 219, 0.2);
-  color: #3498db;
-  border: 1px solid #3498db;
-}
-
-.btn-delete {
-  background: rgba(231, 76, 60, 0.2);
-  color: #e74c3c;
-  border: 1px solid #e74c3c;
-}
-</style>

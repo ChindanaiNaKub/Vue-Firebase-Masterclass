@@ -1,8 +1,5 @@
 <script setup>
-// Chapter 5 Workshop: Todo Edit View
-// - ดึงข้อมูลจาก API ตาม id
-// - แก้ไขและบันทึก
-
+// Chapter 5-6 Workshop: Todo Edit View with Tailwind + DaisyUI
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useTodoStore } from '@/stores/todos'
@@ -20,6 +17,7 @@ const form = ref({
 const isLoading = ref(true)
 const isSaving = ref(false)
 const notFound = ref(false)
+const showToast = ref(false)
 
 // โหลดข้อมูล Todo ตอนเปิดหน้า
 onMounted(async () => {
@@ -50,8 +48,12 @@ const handleSubmit = async () => {
   isSaving.value = false
 
   if (success) {
-    alert('บันทึกสำเร็จ!')
-    router.push({ name: 'todo-list' })
+    // Show toast
+    showToast.value = true
+    setTimeout(() => {
+      showToast.value = false
+      router.push({ name: 'todo-list' })
+    }, 1500)
   }
 }
 
@@ -62,227 +64,123 @@ const handleCancel = () => {
 </script>
 
 <template>
-  <div class="container">
-    <h1>✏️ แก้ไขรายการ</h1>
+  <div class="max-w-md mx-auto">
+    <!-- Toast -->
+    <div v-if="showToast" class="toast toast-top toast-end z-50">
+      <div class="alert alert-success">
+        <span>✅ บันทึกสำเร็จ!</span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-bold">✏️ แก้ไขรายการ</h1>
+      <span class="badge badge-primary mt-2">ID: {{ route.params.id }}</span>
+    </div>
 
     <!-- Loading -->
-    <div v-if="isLoading" class="loading">
-      <div class="spinner"></div>
-      <p>กำลังโหลดข้อมูล...</p>
+    <div v-if="isLoading" class="flex flex-col items-center justify-center p-10">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+      <p class="mt-4 text-base-content/60">กำลังโหลดข้อมูล...</p>
     </div>
 
     <!-- Not Found -->
-    <div v-else-if="notFound" class="not-found">
-      <p>❌ ไม่พบรายการที่ต้องการแก้ไข</p>
-      <button @click="handleCancel" class="btn">กลับหน้าหลัก</button>
+    <div v-else-if="notFound" class="card bg-base-100 shadow-xl">
+      <div class="card-body items-center text-center">
+        <p class="text-4xl">❌</p>
+        <p class="text-xl font-bold">ไม่พบรายการ</p>
+        <p class="text-base-content/60">ไม่พบรายการที่ต้องการแก้ไข</p>
+        <button @click="handleCancel" class="btn btn-primary mt-4">
+          กลับหน้าหลัก
+        </button>
+      </div>
     </div>
 
     <!-- Edit Form -->
-    <form v-else @submit.prevent="handleSubmit" class="form">
-      <div class="form-group">
-        <label>ชื่อรายการ</label>
-        <input 
-          v-model="form.name"
-          type="text"
-          class="form-input"
-          placeholder="กรอกชื่อรายการ"
-          :disabled="isSaving"
-        >
-      </div>
+    <div v-else class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <form @submit.prevent="handleSubmit">
+          <!-- Name Input -->
+          <div class="form-control mb-4">
+            <label class="label">
+              <span class="label-text font-semibold">ชื่อรายการ</span>
+            </label>
+            <input 
+              v-model="form.name"
+              type="text"
+              class="input input-bordered w-full"
+              placeholder="กรอกชื่อรายการ"
+              :disabled="isSaving"
+            >
+          </div>
 
-      <div class="form-group">
-        <label class="checkbox-label">
+          <!-- Status -->
+          <div class="form-control mb-6">
+            <label class="label cursor-pointer justify-start gap-4">
+              <input 
+                v-model="form.status"
+                type="checkbox"
+                class="checkbox checkbox-primary"
+                :disabled="isSaving"
+              >
+              <span class="label-text">เสร็จแล้ว</span>
+              <span 
+                class="badge ml-auto"
+                :class="form.status ? 'badge-success' : 'badge-warning'"
+              >
+                {{ form.status ? 'Done' : 'Pending' }}
+              </span>
+            </label>
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex gap-2">
+            <button 
+              type="button" 
+              @click="handleCancel" 
+              class="btn btn-ghost flex-1"
+              :disabled="isSaving"
+            >
+              ❌ ยกเลิก
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary flex-1"
+              :disabled="isSaving"
+            >
+              <span v-if="isSaving" class="loading loading-spinner loading-sm"></span>
+              <span v-else>💾 บันทึก</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Preview Card -->
+    <div v-if="!isLoading && !notFound" class="mt-6">
+      <h3 class="text-sm font-semibold text-base-content/60 mb-2">👁️ Preview</h3>
+      <div class="card bg-base-100 shadow">
+        <div class="card-body p-4 flex-row items-center gap-4">
           <input 
-            v-model="form.status"
             type="checkbox"
-            :disabled="isSaving"
+            :checked="form.status"
+            class="checkbox checkbox-primary"
+            disabled
           >
-          <span>เสร็จแล้ว</span>
-        </label>
-      </div>
-
-      <div class="form-actions">
-        <button 
-          type="button" 
-          @click="handleCancel" 
-          class="btn btn-cancel"
-          :disabled="isSaving"
-        >
-          ❌ ยกเลิก
-        </button>
-        <button 
-          type="submit" 
-          class="btn btn-save"
-          :disabled="isSaving"
-        >
-          {{ isSaving ? '⏳ กำลังบันทึก...' : '💾 บันทึก' }}
-        </button>
-      </div>
-    </form>
-
-    <!-- Preview -->
-    <div v-if="!isLoading && !notFound" class="preview">
-      <h3>👁️ Preview</h3>
-      <div class="preview-card" :class="{ 'completed': form.status }">
-        <span class="preview-status">{{ form.status ? '✅' : '⬜' }}</span>
-        <span class="preview-name">{{ form.name || 'ชื่อรายการ' }}</span>
+          <span 
+            class="flex-1"
+            :class="{ 'line-through opacity-50': form.status }"
+          >
+            {{ form.name || 'ชื่อรายการ' }}
+          </span>
+          <span 
+            class="badge"
+            :class="form.status ? 'badge-success' : 'badge-warning'"
+          >
+            {{ form.status ? 'Done' : 'Pending' }}
+          </span>
+        </div>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.container {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-.loading, .not-found {
-  text-align: center;
-  padding: 40px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  border-top-color: #00cec9;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 15px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.form {
-  background: rgba(255, 255, 255, 0.08);
-  padding: 25px;
-  border-radius: 12px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-
-.form-input {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  font-size: 1rem;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: #00cec9;
-}
-
-.form-input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-}
-
-.checkbox-label input {
-  width: 20px;
-  height: 20px;
-  accent-color: #00cec9;
-}
-
-.form-actions {
-  display: flex;
-  gap: 15px;
-  margin-top: 25px;
-}
-
-.btn {
-  flex: 1;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: transform 0.2s, opacity 0.2s;
-}
-
-.btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-cancel {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.btn-save {
-  background: linear-gradient(135deg, #00b894, #00cec9);
-  color: white;
-}
-
-.preview {
-  margin-top: 30px;
-}
-
-.preview h3 {
-  margin-bottom: 10px;
-  opacity: 0.7;
-}
-
-.preview-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  transition: opacity 0.3s;
-}
-
-.preview-card.completed {
-  opacity: 0.6;
-}
-
-.preview-card.completed .preview-name {
-  text-decoration: line-through;
-}
-
-.preview-status {
-  font-size: 1.2rem;
-}
-
-.preview-name {
-  font-size: 1rem;
-}
-</style>
