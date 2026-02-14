@@ -1,7 +1,7 @@
 <script setup>
 // Chapter 5-6 Workshop: Todo List View with Tailwind + DaisyUI
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import { useTodoStore } from '@/stores/todos'
 
 const router = useRouter()
@@ -62,6 +62,9 @@ const handleDelete = async (id) => {
 
 <template>
   <div class="relative">
+    <div class="mb-4">
+      <RouterLink to="/" class="link link-hover text-sm">← กลับร้านค้า</RouterLink>
+    </div>
     <!-- Loading Overlay -->
     <div v-if="todoStore.loading" class="absolute inset-0 bg-base-300/50 flex items-center justify-center z-50 rounded-lg">
       <span class="loading loading-spinner loading-lg text-primary"></span>

@@ -10,6 +10,8 @@
 | [4](./chapter-4.md) | Router และ Pinia | Vue Router, Pinia Store, Navigation |
 | [5](./chapter-5.md) | ต่อ API | Fetch API, CRUD, Loading State |
 | [6](./chapter-6.md) | Tailwind + DaisyUI | Utility CSS, Components |
+| [7](./chapter-7.md) | Easy E-commerce (User) | Layout, Product, Cart, Checkout |
+| [8](./chapter-8.md) | ฝั่ง Admin (Backoffice) | Login, Dashboard, Product/User/Order |
 
 ---
 
@@ -62,6 +64,10 @@ const props = defineProps({ message: String })
 ```
 
 ---
+
+## อ่านเพิ่ม
+
+- [Nuxt vs Vue](nuxt-vs-vue.md) – ทำไมใช้ Nuxt ทั้งที่มี Vue แล้ว (อ้างอิง [คลิป](https://www.youtube.com/watch?v=FSomc5aOgKE), [บทความ](https://mikelopster.dev/posts/nuxt-vs-vue))
 
 ## Workshop Files
 

@@ -1,6 +1,6 @@
 <script setup>
 // Chapter 4-6 Workshop: Book List View with Tailwind + DaisyUI
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import { useBookStore } from '@/stores/books'
 
 const router = useRouter()
@@ -23,6 +23,9 @@ const handleDelete = (id) => {
 
 <template>
   <div>
+    <div class="mb-4">
+      <RouterLink to="/" class="link link-hover text-sm">← กลับร้านค้า</RouterLink>
+    </div>
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-3xl font-bold">📚 รายการหนังสือ</h1>

@@ -1,34 +1,22 @@
 <script setup>
-// Chapter 4-6: App with Router + Tailwind
+// Chapter 4-8: App - RouterView + Toast + โหลด cart + product
+import { onMounted } from 'vue'
+import { useUserCartStore } from '@/stores/user/cart'
+import { useAdminProductStore } from '@/stores/admin/product'
+import Toast from '@/components/Toast.vue'
+
+const userCartStore = useUserCartStore()
+const adminProductStore = useAdminProductStore()
+
+onMounted(() => {
+  userCartStore.loadCart()
+  adminProductStore.loadProduct() // เซ็ต product-data (ฝั่งร้านโหลดจากนี้)
+})
 </script>
 
 <template>
   <div class="min-h-screen bg-base-200" data-theme="night">
-    <!-- Navbar -->
-    <nav class="navbar bg-base-100 shadow-lg">
-      <div class="flex-1">
-        <RouterLink to="/" class="btn btn-ghost text-xl">📚 Vue Workshop</RouterLink>
-      </div>
-      <div class="flex-none">
-        <ul class="menu menu-horizontal px-1">
-          <li><RouterLink to="/" class="btn btn-ghost">Todo List</RouterLink></li>
-          <li><RouterLink to="/books" class="btn btn-ghost">Book Store</RouterLink></li>
-        </ul>
-      </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="container mx-auto max-w-3xl p-4">
-      <RouterView />
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer footer-center p-4 bg-base-100 text-base-content mt-auto">
-      <p>Vue Firebase Masterclass - Chapter 6: Tailwind + DaisyUI</p>
-    </footer>
+    <RouterView />
+    <Toast />
   </div>
 </template>
-
-<style>
-/* ใช้ Tailwind แทน CSS ปกติ */
-</style>
